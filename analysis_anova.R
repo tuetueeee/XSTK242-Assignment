@@ -2,7 +2,7 @@ library(car)       # để dùng leveneTest
 library(dplyr)     # để xử lý dữ liệu
 
 # 1. Chuẩn bị dữ liệu
-GPU <- read.csv("data/All_GPUs.csv", stringsAsFactors = FALSE)
+GPU <- read.csv("D:/242_XSTK/XSTK242-Assignment/All_GPUs.csv", stringsAsFactors = FALSE)
 GPU[GPU == ""] <- NA
 GPU$Memory_Bandwidth <- as.numeric(gsub(" GB/s", "", GPU$Memory_Bandwidth))
 
