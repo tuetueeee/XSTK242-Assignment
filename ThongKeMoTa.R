@@ -37,8 +37,15 @@ ggplot(main_data, aes(x = Memory_Bandwidth)) +
 
 ggplot(main_data, aes(x = Dedicated, y = Memory_Bandwidth)) +
   geom_boxplot(fill = "lightblue", color = "black") +
-  labs(title = "Boxplot of log(Memory Bandwidth) for Dedicated GPU",
-       x = "Dedicated GPU", y = "log(Memory Bandwidth)") + theme_minimal()
+  labs(title = "Boxplot of log(Memory_Bandwidth) for Dedicated GPU",
+       x = "Dedicated GPU", y = "log(Memory_Bandwidth)") +
+  theme_minimal()
+
+ggplot(main_data, aes(x = Shader, y = Memory_Bandwidth)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Boxplot of log(Memory_Bandwidth) for Shader",
+       x = "Shader", y = "log(Memory_Bandwidth)") +
+  theme_minimal()
 
 ggplot(main_data, aes(x = Memory_Speed, y = Memory_Bandwidth)) +
   geom_point(color = "red") +
