@@ -1,5 +1,3 @@
-library(dplyr)
-
 
 GPUs_list <- read.csv("D:/CS_Major/Đại Cương/XSTK_BTL/All_GPUs.csv", na.strings = c("", "N/A"))
 
@@ -19,24 +17,33 @@ clean_numeric <- function(x) {
   as.numeric(gsub("[^0-9\\.]", "", x))
 }
 
+convert_bandwidth <- function(x) {
+  x <- trimws(x)
+  if (grepl("GB", x)) {
+    as.numeric(gsub("[^0-9\\.]", "", x))
+  } else if (grepl("MB", x)) {
+    as.numeric(gsub("[^0-9\\.]", "", x)) / 1024
+  } else {
+    NA
+  }
+}
+
 df_gpu <- df_gpu %>%
   rename(
     `Memory_Speed (MHz)` = Memory_Speed,
     `Memory_Bus (bit)` = Memory_Bus,
     `Memory_Bandwidth (GB/s)` = Memory_Bandwidth,
-    `L2_Cache (MB)` = L2_Cache,
-    `Dedicated (GB)` = Dedicated
+    `L2_Cache (KB)` = L2_Cache
   )
 
 
 df_gpu <- df_gpu %>%
   mutate(
     `Memory_Speed (MHz)` = clean_numeric(`Memory_Speed (MHz)`),
-    `L2_Cache (MB)` = clean_numeric(`L2_Cache (MB)`),
-    `Dedicated (GB)` = clean_numeric(`Dedicated (GB)`),
+    `L2_Cache (KB)` = clean_numeric(`L2_Cache (KB)`),
     `Memory_Bus (bit)` = clean_numeric(`Memory_Bus (bit)`),
-    Shader = clean_numeric(Shader),
-    `Memory_Bandwidth (GB/s)` = clean_numeric(`Memory_Bandwidth (GB/s)`)
+    `Shader` = clean_numeric(`Shader`),
+    `Memory_Bandwidth (GB/s)` = sapply(`Memory_Bandwidth (GB/s)`, convert_bandwidth)
   )
 
 GPUs_final <- df_gpu %>% 
