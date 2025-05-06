@@ -1,52 +1,64 @@
-library(car)       # để dùng leveneTest
-library(dplyr)     # để xử lý dữ liệu
+# library(car)       # để dùng leveneTest
+# library(dplyr)     # để xử lý dữ liệu
 
-# Doc du lieu
-All_GPUs <- read.csv("~/HCMUT/242 XSTK/btl/archive/All_GPUs.csv")
-head(All_GPUs)
+# # 2. Phân nhóm hãng
+# AMD <- subset(new_GPU_data, Manufacturer == "AMD")
+# Nvidia <- subset(new_GPU_data, Manufacturer == "Nvidia")
+# 
+# # 3. Kiểm tra phân phối chuẩn
+# qnorm(AMD$Memory_Bandwidth)
+# qqline(AMD$Memory_Bandwidth, col="red")
+# shapiro.test(AMD$Memory_Bandwidth)     # -> p < 0.05
+# 
+# qqnorm(Nvidia$Memory_Bandwidth)
+# qqline(Nvidia$Memory_Bandwidth, col="red")
+# shapiro.test(Nvidia$Memory_Bandwidth)  # -> p < 0.05
+# 
+# # 4. Kiểm định đồng nhất phương sai
+# leveneTest(new_GPU_data$Memory_Bandwidth ~ as.factor(new_GPU_data$Manufacturer), data = new_GPU_data)
+# # -> p < 0.05, không đồng nhất phương sai
+# 
+# # 5. Phân tích phương sai (ANOVA)
+# anova_model <- aov(Memory_Bandwidth ~ Manufacturer, data = new_GPU_data)
+# summary(anova_model)
 
-All_GPUs[All_GPUs == ""] <- NA
-All_GPUs[] <- lapply(All_GPUs, function(x) gsub ("^\\n- $", NA, x))
-All_GPUs[] <- lapply(All_GPUs, function(x) gsub ("^\\ n$", NA, x))
+Mem_Anova = c("Memory_Bandwidth", "Manufacturer")
+Memory_Anova <- new_GPU_data[, Mem_Anova]
+Memory_Anova <- Memory_Anova[Memory_Anova$Manufacturer %in% c("ATI", "Intel", "Nvidia", "AMD"),]
+summary(Memory_Anova)
 
-library(questionr)
-freq.na(All_GPUs)
+MBandwidth_ATI <- subset(Memory_Anova, Memory_Anova$Manufacturer == "ATI")
+MBandwidth_Intel <- subset(Memory_Anova, Memory_Anova$Manufacturer == "Intel")
+MBandwidth_Nvidia <- subset(Memory_Anova, Memory_Anova$Manufacturer == "Nvidia")
+MBandwidth_AMD <- subset(Memory_Anova, Memory_Anova$Manufacturer == "AMD")
 
-NA_summary <- data.frame(freq.na(All_GPUs))
-colnames(NA_summary) <- c("Missing", "Percent")
-selected_columns <- rownames(NA_summary[NA_summary$Percent < 10, ])
-new_GPU_data <- All_GPUs[, selected_columns]
-new_GPU_data <- na.omit(new_GPU_data)
+par(mfrow = c(2,2))
 
-str(new_GPU_data)
+qqnorm(MBandwidth_Nvidia$Memory_Bandwidth, main = "Nvidia")
+qqline(MBandwidth_Nvidia$Memory_Bandwidth)
 
-columns_to_clean <- c("L2_Cache","Memory_Bandwidth","Memory_Bus","Memory_Speed")
+qqnorm(MBandwidth_AMD$Memory_Bandwidth, main = "AMD")
+qqline(MBandwidth_AMD$Memory_Bandwidth)
 
-remove_units <- function(column) {
-  cleaned_column <- gsub("[^0-9.]", "", column)
-  cleaned_column <- as.numeric(cleaned_column)
-  return(cleaned_column)
-}
+qqnorm(MBandwidth_Intel$Memory_Bandwidth, main = "Intel")
+qqline(MBandwidth_Intel$Memory_Bandwidth)
 
-new_GPU_data[columns_to_clean] <- lapply(new_GPU_data[columns_to_clean], remove_units)
+qqnorm(MBandwidth_ATI$Memory_Bandwidth, main = "ATI")
+qqline(MBandwidth_ATI$Memory_Bandwidth)
 
-# 2. Phân nhóm hãng
-AMD <- subset(new_GPU_data, Manufacturer == "AMD")
-Nvidia <- subset(new_GPU_data, Manufacturer == "Nvidia")
+par(mfrow = c(1,1))
 
-# 3. Kiểm tra phân phối chuẩn
-qnorm(AMD$Memory_Bandwidth)
-qqline(AMD$Memory_Bandwidth, col="red")
-shapiro.test(AMD$Memory_Bandwidth)     # -> p < 0.05
+shapiro.test(MBandwidth_Nvidia$Memory_Bandwidth)
+shapiro.test(MBandwidth_AMD$Memory_Bandwidth)
+shapiro.test(MBandwidth_Intel$Memory_Bandwidth)
+shapiro.test(MBandwidth_ATI$Memory_Bandwidth)
 
-qqnorm(Nvidia$Memory_Bandwidth)
-qqline(Nvidia$Memory_Bandwidth, col="red")
-shapiro.test(Nvidia$Memory_Bandwidth)  # -> p < 0.05
+library(car)
+leveneTest(Memory_Bandwidth ~ Manufacturer, data = Memory_Anova)
 
-# 4. Kiểm định đồng nhất phương sai
-leveneTest(new_GPU_data$Memory_Bandwidth ~ as.factor(new_GPU_data$Manufacturer), data = new_GPU_data)
-# -> p < 0.05, không đồng nhất phương sai
+Anova_model <- aov(Memory_Bandwidth ~ Manufacturer, data = Memory_Anova)
+summary(Anova_model)
 
-# 5. Phân tích phương sai (ANOVA)
-anova_model <- aov(Memory_Bandwidth ~ Manufacturer, data = new_GPU_data)
-summary(anova_model)
+TukeyHSD(Anova_model)
+
+plot(TukeyHSD(Anova_model))

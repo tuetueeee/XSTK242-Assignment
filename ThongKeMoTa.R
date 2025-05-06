@@ -23,45 +23,50 @@ main_data <- subset(main_data, !(Shader %in% c(1, 1.4)))
 library(ggplot2)
 ggplot(main_data, aes(x = Memory_Bandwidth)) +
   geom_histogram(fill = "lightblue", color = "black", bins = 15) +
-  labs(title = "Histogram of Memory Bandwidth", x = "Memory Bandwidth (GB/s)", y = "Count") + theme_minimal()
+  labs(title = "Histogram of Memory_Bandwidth", x = "Memory Bandwidth (GB/s)", y = "Count") + theme_minimal()
 
-main_data$Memory_Bandwidth<-log(main_data$Memory_Bandwidth)
-main_data$Memory_Speed<-log(main_data$Memory_Speed)
-main_data$L2_Cache<-log(main_data$L2_Cache)
-main_data$Memory_Bus<-log(main_data$Memory_Bus)
+# main_data$Memory_Bandwidth<-log(main_data$Memory_Bandwidth)
+# main_data$Memory_Speed<-log(main_data$Memory_Speed)
+# main_data$L2_Cache<-log(main_data$L2_Cache)
+# main_data$Memory_Bus<-log(main_data$Memory_Bus)
 
-ggplot(main_data, aes(x = Memory_Bandwidth)) +
-  geom_histogram(fill = "lightblue", color = "black", bins = 15) +
-  labs(title = "Histogram of log (Memory Bandwidth)", x = "log(Memory Bandwidth)", y = "Count") +
-  theme_minimal()
+# ggplot(main_data, aes(x = Memory_Bandwidth)) +
+#   geom_histogram(fill = "lightblue", color = "black", bins = 15) +
+#   labs(title = "Histogram of log (Memory Bandwidth)", x = "log(Memory Bandwidth)", y = "Count") +
+#   theme_minimal()
 
 ggplot(main_data, aes(x = Dedicated, y = Memory_Bandwidth)) +
-  geom_boxplot(fill = "lightblue", color = "black") +
-  labs(title = "Boxplot of log(Memory_Bandwidth) for Dedicated GPU",
-       x = "Dedicated GPU", y = "log(Memory_Bandwidth)") +
+  geom_boxplot(fill = "pink", color = "black") +
+  labs(title = "Boxplot of Memory_Bandwidth for Dedicated GPU",
+       x = "Dedicated GPU", y = "Memory_Bandwidth (GB/sec)") +
   theme_minimal()
 
 ggplot(main_data, aes(x = Shader, y = Memory_Bandwidth)) +
   geom_boxplot(fill = "lightblue", color = "black") +
-  labs(title = "Boxplot of log(Memory_Bandwidth) for Shader",
-       x = "Shader", y = "log(Memory_Bandwidth)") +
+  labs(title = "Boxplot of Memory_Bandwidth for Shader",
+       x = "Shader", y = "Memory_Bandwidth") +
   theme_minimal()
+
+# Pie chart
+ma = table(main_data$Manufacturer)
+pie(ma, main = "Pie chart of Manufacturer ", radius = 1.3)
 
 ggplot(main_data, aes(x = Memory_Speed, y = Memory_Bandwidth)) +
   geom_point(color = "red") +
-  labs(title = "Scatter Plot of log( Memory Bandwidth) and log(Memory Speed)", x = "log(Memory Speed)", y = "log(Memory_Bandwidth)") +
+  labs(title = "Scatter Plot of Memory_Bandwidth and Memory_Speed",
+       x = "Memory_Speed (MHz)", y = "Memory_Bandwidth (GB/sec)") +
   theme_minimal()
 
 ggplot(main_data, aes(x = L2_Cache, y = Memory_Bandwidth)) +
   geom_point(color = "blue") +
-  labs(title = "Scatter Plot of log(Memory Bandwidth) and log(L2 Cache)",
-       x = "log(L2 Cache)", y = "log(Memory Bandwidth)") +
+  labs(title = "Scatter Plot of Memory_Bandwidth and L2_Cache",
+       x = "L2_Cache (KB)", y = "Memory_Bandwidth (GB/sec)") +
   theme_minimal()
 
 ggplot(main_data, aes(x = Memory_Bus, y = Memory_Bandwidth)) +
   geom_point(color = "purple") +
-  labs(title = "Scatter Plot of log(Memory Bandwidth) and log(Memory Bus)",
-       x = "log(Memory Bus)", y = "log(Memory Bandwidth)") +
+  labs(title = "Scatter Plot of Memory_Bandwidth and Memory_Bus",
+       x = "Memory_Bus (Bit)", y = "Memory_Bandwidth (GB/sec)") +
   theme_minimal()
 
 library(corrplot)
