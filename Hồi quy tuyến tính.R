@@ -1,5 +1,5 @@
 # Doc du lieu
-All_GPUs <- read.csv("C:/Users/GIGABYTE/Downloads/Box of Pandora/year 2/242/Xác suất thống kê/archive/All_GPUs.csv")
+All_GPUs <- read.csv("D:/Box of Pandora/year 2/242/Xác suất thống kê/archive/All_GPUs.csv")
 head(All_GPUs)
 
 All_GPUs[All_GPUs == ""] <- NA
