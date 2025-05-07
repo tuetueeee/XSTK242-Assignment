@@ -18,7 +18,7 @@
 
 📌 Cách sử dụng
 Clone repo:
-1. git clone https://github.com/yourusername/XSTK242-Assignment.git
+1. git clone https://github.com/tuetueeee/XSTK242-Assignment.git
 2. Mở từng file .R bằng RStudio hoặc trình soạn thảo phù hợp.
 3. Chạy mã theo thứ tự:
 - Tien_xu_ly.R
